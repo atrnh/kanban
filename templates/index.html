@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Kanban Board{% endblock %}
+
+{% block content %}
+  <form action="/task/1/move/2" method="POST">
+    <input type="submit">
+  </form>
+  {% for board in boards %}
+    <section>
+      <h1>{{ board.id }}</h1>
+      <form action="/board/{{ board.id }}/add_job" method="POST">
+        Add a job:</br>
+        <input type="text" name="title" placeholder="Title"></br>
+        <input type="text" name="desc" placeholder="Description"></br>
+        <input type="submit">
+      </form>
+      {% if board.jobs %}
+        <div>
+          {% for job in board.jobs %}
+            <h2>{{ job.title }}</h2>
+            <form action="/job/{{ job.id }}/add_task" method="POST">
+              Add a task:</br>
+              <input type="text" name="title" placeholder="Title"></br>
+              <input type="hidden" name="board_id" value="{{ board.id }}"
+              <input type="submit">
+            </form>
+            {% if job.get_tasks(board) %}
+              <ul>
+                {% for task in job.get_tasks(board) %}
+                  <li>{{ task.title }}</li>
+                {% endfor %}
+              </ul>
+            {% endif %}
+          {% endfor %}
+        </div>
+      {% endif %}
+    </section>
+  {% endfor %}
+{% endblock %}
